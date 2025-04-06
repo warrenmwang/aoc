@@ -14,11 +14,10 @@ def solve(n: int):
         input_ = f"{key}{num}"
         test = hashlib.md5(input_.encode()).hexdigest()
         if test[0:n] == expected:
-            print(f"Found num {num} with key {key} yielding hash in hex format with {n} leading zeros: {test}")
-            break
+            return num
         else:
             num += 1
 
 if __name__ == "__main__":
-    solve(5)
-    solve(6)
+    assert solve(5) == 117946
+    assert solve(6) == 3938038

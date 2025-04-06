@@ -32,7 +32,7 @@ def part_one():
     print(is_nice("dvszwmarrgswjxmb") == False) # one vowel
 
     num_nice = 0
-    with open("./5.input", "r") as f:
+    with open("input/5.txt", "r") as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
@@ -68,7 +68,7 @@ def part_two():
     print(is_nice_too("ieodomkazucvgmuy") == False)
 
     num_nice = 0
-    with open("./5.input", "r") as f:
+    with open("input/5.txt", "r") as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
