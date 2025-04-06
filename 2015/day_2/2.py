@@ -1,6 +1,6 @@
 # part 1
 # total = 0
-# with open("2.input", "r") as f:
+# with open("input/2.txt", "r") as f:
 #     lines = f.readlines()
 #     for l in lines:
 #         l,w,h = map(int, l.split("x"))
@@ -12,7 +12,7 @@
 
 # part 2
 total = 0
-with open("2.input", "r") as f:
+with open("input/2.txt", "r") as f:
     lines = f.readlines()
     for l in lines:
         dims = [x for x in map(int, l.split("x"))]

@@ -114,7 +114,6 @@ fn build_graph(lines: Vec<&str>) -> HashMap<String, Node> {
     graph
 }
 
-// TODO: getting stack overflow
 fn topological_sort(graph: &HashMap<String, Node>, starting_node_id: String) -> Vec<Node> {
     fn helper(
         graph: &HashMap<String, Node>,
@@ -149,33 +148,6 @@ fn topological_sort(graph: &HashMap<String, Node>, starting_node_id: String) -> 
 
     topo_order
 }
-// // dfs starting from desired wire node
-// let start_node = graph.get(&desired_wire).unwrap();
-
-// stack.push(start_node);
-// while let Some(node) = stack.pop() {
-//     if !discovered.contains(&node.id) {
-//         println!("{}", node);
-//         discovered.push(node.id.clone());
-//         // println!("discovered: {:?}", discovered);
-
-//         match node.dependencies.clone() {
-//             Some(deps) => {
-//                 for d in deps {
-//                     match graph.get(&d) {
-//                         Some(d) => stack.push(d),
-//                         None => panic!("no node in graph with id: {d}"),
-//                     }
-//                 }
-//             }
-//             None => {
-//                 // clone to avoid mutating graph nodes
-//                 topo_order.push(node.clone());
-//                 println!("FIN {}", node);
-//             }
-//         }
-//     }
-// }
 
 fn calculate_from_topo(mut graph: HashMap<String, Node>, mut topo_order: Vec<Node>) -> u16 {
     for (i, curr_node) in topo_order.iter_mut().enumerate() {
