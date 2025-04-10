@@ -108,7 +108,7 @@ fn build_graph(lines: Vec<&str>) -> HashMap<String, Node> {
             _ => panic!("Unhandled line: {line}"),
         };
 
-        println!("> {}", new_node);
+        // println!("> {}", new_node);
         graph.insert(output.clone(), new_node);
     }
     graph
@@ -154,7 +154,7 @@ fn calculate_from_topo(mut graph: HashMap<String, Node>, mut topo_order: Vec<Nod
         // utilize verb and nums to compute values, updating nodes until we reach the final
         // desired node and get its value.
 
-        println!("before {}", curr_node);
+        // println!("before {}", curr_node);
 
         if i == 0 {
             assert_ne!(curr_node.num, None);
@@ -225,7 +225,7 @@ fn calculate_from_topo(mut graph: HashMap<String, Node>, mut topo_order: Vec<Nod
         }
 
         graph.insert(curr_node.id.clone(), curr_node.clone());
-        println!("after {}", curr_node);
+        // println!("after {}", curr_node);
     }
 
     topo_order[topo_order.len() - 1].num.unwrap()
@@ -243,20 +243,43 @@ fn main() {
     let input = fs::read_to_string(filename).unwrap();
     let lines: Vec<_> = input.lines().collect();
 
-    println!("====== GRAPH ====== ");
-    let graph = build_graph(lines);
-    println!();
+    // println!("====== GRAPH ====== ");
+    let mut graph = build_graph(lines);
+    // println!();
 
-    println!("======= TOPO ======= ");
-    let topo_order = topological_sort(&graph, desired_wire.clone());
-    println!();
+    // println!("======= TOPO ======= ");
+    let mut topo_order = topological_sort(&graph, desired_wire.clone());
+    // println!();
 
     // create a topological sort of a subgraph of the entire
     // graph in order to resolve the necessary dependencies for just
     // the desired wire (no need to explore entire graph unless necessary
     // for the wire we want to resolve).
-    println!("====== RESOLVE ====== ");
-    let res = calculate_from_topo(graph, topo_order);
+    // println!("====== RESOLVE ====== ");
+    let a_wire_val = calculate_from_topo(graph.clone(), topo_order.clone());
 
-    println!("{} = {}", desired_wire, res);
+    // part 1 result
+    println!("PART 1: {} = {}", desired_wire, a_wire_val);
+
+    // part 2 result
+    // override b to be part 1 'a' wire value, then just
+    // recompute the DAG for 'a' again, this is a separate graph
+    // so that wires are already "reset"
+    // unfort, our current setup has two copies of the DAG
+    // and we need to update in both...
+    //
+    // one in graph
+    let b_wire = graph.get_mut(&String::from("b")).unwrap();
+    b_wire.num = Some(a_wire_val);
+
+    // another in topo order vec
+    for n in topo_order.iter_mut() {
+        if n.id == String::from("b") {
+            n.num = Some(a_wire_val);
+        }
+    }
+
+    // finally do part 2
+    let a_wire_val = calculate_from_topo(graph, topo_order);
+    println!("PART 2: {} = {}", desired_wire, a_wire_val);
 }
