@@ -1,3 +1,4 @@
+use serde_json::Value;
 use std::fs;
 
 fn is_num(i: usize, chars: &Vec<char>) -> bool {
@@ -53,18 +54,70 @@ fn part_1(input: String) {
 
     // 176852
     // too high
+
     // 156366
     // correct
 }
 
+fn parse_json_chunk(v: Value) -> i64 {
+    let mut res: i64 = 0;
+
+    match v {
+        Value::Null => {}
+        Value::Bool(_) => {}
+        Value::String(_) => {}
+        Value::Number(n) => {
+            if n.is_i64() {
+                res += n.as_i64().unwrap();
+            }
+        }
+        Value::Array(a) => {
+            for x in a {
+                res += parse_json_chunk(x);
+            }
+        }
+        Value::Object(o) => {
+            let mut ignore_obj = false;
+            // check if ignore this entire object
+            for v in o.values() {
+                match v {
+                    Value::String(s) => {
+                        if *s == "red".to_string() {
+                            ignore_obj = true;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            if !ignore_obj {
+                for v in o.values() {
+                    res += parse_json_chunk(v.clone()); // TODO: why need clone here?
+                }
+            }
+        }
+    }
+
+    res
+}
+
 fn part_2(input: String) {
-    // TODO: no shortcuts now, it looks like I actually have to lex/parse
-    // the json now and know where we are in the json structure
+    let v: Value = serde_json::from_str(&input).unwrap();
+    println!("{}", parse_json_chunk(v));
+}
+
+fn read_file(filename: &'static str) -> String {
+    let input = fs::read_to_string(filename).expect("file not found");
+    String::from(input.trim())
 }
 
 fn main() {
-    let input = fs::read_to_string("input.json").expect("file not found");
-    let input = String::from(input.trim());
+    let input = read_file("input.json");
     part_1(input);
-    // part_2(input);
+
+    let input = read_file("test.json");
+    part_2(input); // expect -2
+
+    let input = read_file("input.json");
+    part_2(input); // correct ans: 96852
 }
