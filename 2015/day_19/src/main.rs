@@ -1,8 +1,52 @@
 use std::{collections::HashSet, fs};
 
+fn part_1(molecule: String, mappings: Vec<(&str, &str)>) {
+    // "How many distinct molecules can be created after all the
+    // different ways you can do one replacement on the medicine molecule?"
+
+    let mut results: HashSet<String> = HashSet::new();
+
+    for (sub_str, replacement) in mappings {
+        let mut p1: usize = 0;
+        let mut p2: usize = sub_str.len();
+
+        while p2 <= molecule.len() {
+            if &molecule[p1..p2] == sub_str {
+                let mut potential_new_molecule = molecule.clone();
+                potential_new_molecule.replace_range(p1..p2, replacement);
+                results.insert(potential_new_molecule);
+            }
+            p1 += 1;
+            p2 += 1;
+        }
+    }
+
+    println!("Part 1 Answer: {}", results.len());
+}
+
+fn part_2(molecule: String, mut mappings: Vec<(&str, &str)>) {
+    // "How long will it take to make the medicine?
+    // Given the available replacements and the medicine
+    // molecule in your puzzle input, what is the fewest number
+    // of steps to go from e to the medicine molecule?"
+
+    // TODO: simple greedy approach, taking the longest matching reverse rule always?
+    let mut mappings = mappings
+        .iter_mut()
+        .map(|&mut (s1, s2)| (s1.to_string(), s2.to_string()))
+        .collect::<Vec<(String, String)>>();
+    mappings.sort_by(|t1, t2| t2.1.len().cmp(&t1.1.len()));
+
+    println!("{:?}", mappings);
+}
+
 fn main() {
+    // https://adventofcode.com/2015/day/19
+
+    // let input = fs::read_to_string("test.txt").unwrap();
     let input = fs::read_to_string("input.txt").unwrap();
-    let input: Vec<&str> = input.trim().split("\r\n").collect();
+    let input = input.replace("\r", "");
+    let input: Vec<&str> = input.trim().split("\n").collect();
 
     let mut mappings: Vec<(&str, &str)> = Vec::new();
     let mut molecule: String = String::from("");
@@ -21,27 +65,7 @@ fn main() {
         }
     }
 
-    let mut results: HashSet<String> = HashSet::new();
-    for (sub_str, replacement) in mappings {
-        // println!("k, v = {}, {}", sub_str, replacement);
-        let mut p1: usize = 0;
-        let mut p2: usize = sub_str.len();
+    part_1(molecule.clone(), mappings.clone());
 
-        while p2 <= molecule.len() {
-            if &molecule[p1..p2] == sub_str {
-                // println!("sub_str {} match btwn (p1, p2): ({},{})", sub_str, p1, p2);
-                let mut value = molecule.clone();
-                value.replace_range(p1..p2, replacement);
-                results.insert(value);
-            }
-            p1 += 1;
-            p2 += 1;
-        }
-    }
-
-    println!("{}", results.len());
-    // 573 is too low
-    // 576 correct
-
-    // TODO: Part 2 ????????
+    part_2(molecule, mappings);
 }
