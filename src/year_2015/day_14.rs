@@ -82,6 +82,6 @@ pub fn day_14(input: &str) {
         }
     });
 
-    println!("Part 1: {}", max_distance);
-    println!("Part 2: {}", max_points);
+    println!("2015.14 Part 1: {}", max_distance);
+    println!("2015.14 Part 2: {}", max_points);
 }

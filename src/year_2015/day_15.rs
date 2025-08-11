@@ -95,7 +95,7 @@ pub fn day_15(input: &str) {
             }
         }
     }
-    println!("Part 1: {}", max_score);
+    println!("2015.15 Part 1: {}", max_score);
 
     let mut max_score = 0;
     for t1 in 0..100 {
@@ -109,5 +109,5 @@ pub fn day_15(input: &str) {
             }
         }
     }
-    println!("Part 2: {}", max_score);
+    println!("2015.15 Part 2: {}", max_score);
 }

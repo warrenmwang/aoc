@@ -21,7 +21,7 @@ fn part_1(molecule: String, mappings: Vec<(&str, &str)>) {
         }
     }
 
-    println!("Part 1 Answer: {}", results.len());
+    println!("2015.19 Part 1 Answer: {}", results.len());
 }
 
 fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
@@ -40,8 +40,9 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     println!("before");
     println!("{:?}", mappings);
     println!("{}", molecule);
+    println!("2015.19 WIP");
 
-    let mut count = 0;
+    // let mut count = 0;
 
     // while molecule != String::from('e') {
     //     for (map_to, map_from) in mappings.into_iter() {
@@ -56,14 +57,14 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     //         count += 1;
 
     //         if molecule == String::from("e") {
-    //             println!("Part 2: {}", count);
+    //             println!("2015.19 Part 2: {}", count);
     //             return;
     //         }
     //     }
     // }
 
-    println!("unfinished molecule: {}", molecule);
-    println!("count: {}", count)
+    // println!("unfinished molecule: {}", molecule);
+    // println!("count: {}", count)
 
     // println!("after");
     // println!("{}", molecule);

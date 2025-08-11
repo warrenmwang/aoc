@@ -83,10 +83,10 @@ fn get_next_password(curr_password: String) -> String {
 pub fn day_11(input: &str) {
     let mut input = input.trim().to_string();
     input = get_next_password(input);
-    println!("Part 1: {}", input);
+    println!("2015.11 Part 1: {}", input);
 
     input = get_next_password(input);
-    println!("Part 2: {}", input);
+    println!("2015.11 Part 2: {}", input);
 }
 
 #[cfg(test)]

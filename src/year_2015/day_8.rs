@@ -56,6 +56,6 @@ pub fn day_8(input: &str) {
         num_encoded_chars += len_str_in_code(s);
     }
 
-    println!("Part 1: {}", num_code_chars - num_mem_chars);
-    println!("Part 2: {}", num_encoded_chars - num_code_chars);
+    println!("2015.8 Part 1: {}", num_code_chars - num_mem_chars);
+    println!("2015.8 Part 2: {}", num_encoded_chars - num_code_chars);
 }

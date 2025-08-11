@@ -38,7 +38,7 @@ fn part_1(input: &str) {
             num_nice += 1;
         }
     }
-    println!("Part 1: {}", num_nice);
+    println!("2015.5 Part 1: {}", num_nice);
 }
 
 fn is_nice_too(input: &String) -> bool {
@@ -82,7 +82,7 @@ fn part_2(input: &str) {
         }
     }
 
-    println!("Part 2: {}", num_nice_too);
+    println!("2015.5 Part 2: {}", num_nice_too);
 }
 
 pub fn day_5(input: &str) {

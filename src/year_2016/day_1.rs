@@ -54,7 +54,7 @@ fn part_1(input: &str) {
         get_next_orientation(direction, &mut orientation);
         update_position(&orientation, num_steps, &mut x, &mut y);
     }
-    println!("Part 1: {}", x.abs() + y.abs());
+    println!("2016.1 Part 1: {}", x.abs() + y.abs());
 }
 
 fn part_2(input: &str) {
@@ -89,7 +89,7 @@ fn part_2(input: &str) {
             break;
         }
     }
-    println!("Part 2: {}", x.abs() + y.abs());
+    println!("2016.1 Part 2: {}", x.abs() + y.abs());
 }
 
 pub fn day_1(input: &str) {

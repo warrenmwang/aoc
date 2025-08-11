@@ -94,6 +94,6 @@ pub fn day_9(input: &str) {
         }
     }
 
-    println!("Part 1: {}", smallest_path);
-    println!("Part 2: {}", longest_path);
+    println!("2015.9 Part 1: {}", smallest_path);
+    println!("2015.9 Part 2: {}", longest_path);
 }

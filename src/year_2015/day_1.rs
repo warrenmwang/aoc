@@ -7,7 +7,7 @@ fn part_1(input: &str) {
             _ => panic!("unexpected char observed"),
         }
     }
-    println!("Part 1: {}", res);
+    println!("2015.1 Part 1: {}", res);
 }
 
 fn part_2(input: &str) {
@@ -19,7 +19,7 @@ fn part_2(input: &str) {
             _ => panic!("unexpected char observed"),
         }
         if floor < 0 {
-            println!("Part 2: {}", i + 1);
+            println!("2015.1 Part 2: {}", i + 1);
             break;
         }
     }

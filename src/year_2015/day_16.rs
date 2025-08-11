@@ -25,9 +25,9 @@ fn part_1(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
         }
     }
     if let Some(sue) = best_sue_match {
-        println!("Part 1: {}", sue.id);
+        println!("2015.16 Part 1: {}", sue.id);
     } else {
-        println!("Part 1: Oh no! We couldn't find a matching Sue...");
+        println!("2015.16 Part 1: Oh no! We couldn't find a matching Sue...");
     }
 }
 
@@ -58,9 +58,9 @@ fn part_2(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
         }
     }
     if let Some(sue) = best_sue_match {
-        println!("Part 2: {}", sue.id);
+        println!("2015.16 Part 2: {}", sue.id);
     } else {
-        println!("Part 2: Oh no! We couldn't find a matching Sue...");
+        println!("2015.16 Part 2: Oh no! We couldn't find a matching Sue...");
     }
 }
 

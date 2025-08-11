@@ -46,7 +46,7 @@ fn part_1(input: &str) {
     // go on the path of least resistance, just loop thru all the chars and find
     // the numbers and add them together
     let res = parse_nums(input);
-    println!("Part 1: {}", res);
+    println!("2015.12 Part 1: {}", res);
 }
 
 fn parse_json_chunk(v: Value) -> i64 {
@@ -93,7 +93,7 @@ fn parse_json_chunk(v: Value) -> i64 {
 
 fn part_2(input: &str) {
     let v: Value = serde_json::from_str(&input).unwrap();
-    println!("Part 2: {}", parse_json_chunk(v));
+    println!("2015.12 Part 2: {}", parse_json_chunk(v));
 }
 
 pub fn day_12(input: &str) {

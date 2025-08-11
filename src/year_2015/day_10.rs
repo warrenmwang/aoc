@@ -38,6 +38,6 @@ pub fn day_10(input: &str) {
         }
     }
 
-    println!("Part 1: {}", part_1_res.len());
-    println!("Part 2: {}", res.len());
+    println!("2015.10 Part 1: {}", part_1_res.len());
+    println!("2015.10 Part 2: {}", res.len());
 }

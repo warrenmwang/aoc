@@ -234,7 +234,7 @@ pub fn day_7(input: &str) {
     // for the wire we want to resolve).
     let a_wire_val = calculate_from_topo(graph.clone(), topo_order.clone());
 
-    println!("Part 1: a = {}", a_wire_val);
+    println!("2015.7 Part 1: a = {}", a_wire_val);
 
     // part 2 result
     // override b to be part 1 'a' wire value, then just
@@ -256,5 +256,5 @@ pub fn day_7(input: &str) {
 
     // finally do part 2
     let a_wire_val = calculate_from_topo(graph, topo_order);
-    println!("Part 2: a = {}", a_wire_val);
+    println!("2015.7 Part 2: a = {}", a_wire_val);
 }

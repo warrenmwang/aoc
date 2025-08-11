@@ -137,7 +137,7 @@ pub fn day_17(input: &str) {
     let mut cached_results: HashMap<(i32, usize), u32> = HashMap::new();
     let part_1_count = count_combinations(target, current_index, &containers, &mut cached_results);
 
-    println!("Part 1: {}", part_1_count);
+    println!("2015.17 Part 1: {}", part_1_count);
     // part 1: 1638
 
     // part 2: count minimum number of containers amongst valid combinations
@@ -168,8 +168,8 @@ pub fn day_17(input: &str) {
 
     if let Some(res) = part_2_result {
         // println!("minimum containers needed: {}", min.unwrap());
-        println!("Part 2: {}", res);
+        println!("2015.17 Part 2: {}", res);
     } else {
-        println!("OH NO! We didn't get a result for part 2!");
+        println!("2015.17 OH NO! We didn't get a result for part 2!");
     }
 }

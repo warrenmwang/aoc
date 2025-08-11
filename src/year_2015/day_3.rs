@@ -28,7 +28,7 @@ fn part_1(input: &str) {
         visited.insert(pos);
     }
 
-    println!("Part 1: {}", visited.len());
+    println!("2015.3 Part 1: {}", visited.len());
 }
 
 fn part_2(input: &str) {
@@ -45,7 +45,7 @@ fn part_2(input: &str) {
         }
     }
 
-    println!("Part 2: {}", visited.len());
+    println!("2015.3 Part 2: {}", visited.len());
 }
 
 pub fn day_3(input: &str) {

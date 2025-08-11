@@ -149,7 +149,7 @@ fn part_1(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
             sum += grid[i][j] as i32;
         }
     }
-    println!("Part 1: {}", sum);
+    println!("2015.18 Part 1: {}", sum);
 }
 
 fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
@@ -185,7 +185,7 @@ fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
             sum += grid[i][j] as i32;
         }
     }
-    println!("Part 2: {}", sum);
+    println!("2015.18 Part 2: {}", sum);
 }
 
 pub fn day_18(input: &str) {

@@ -15,7 +15,7 @@ fn part_1(input: &str) {
 
         total += 2 * s1 + 2 * s2 + 2 * s3 + min(s1, min(s2, s3));
     }
-    println!("Part 1: {}", total);
+    println!("2015.2 Part 1: {}", total);
 }
 
 fn part_2(input: &str) {
@@ -34,7 +34,7 @@ fn part_2(input: &str) {
 
         total += 2 * s1 + 2 * s2 + (s1 * s2 * s3);
     }
-    println!("Part 2: {}", total);
+    println!("2015.2 Part 2: {}", total);
 }
 
 pub fn day_2(input: &str) {

@@ -49,7 +49,7 @@ fn part_1(input: &str) {
     for line in lines {
         update_grid(&mut grid, line);
     }
-    println!("Part 1: {}", grid.iter().flatten().sum::<u32>());
+    println!("2015.6 Part 1: {}", grid.iter().flatten().sum::<u32>());
 }
 
 fn update_grid_2(grid: &mut Vec<Vec<i32>>, line: &str) {
@@ -101,7 +101,7 @@ fn part_2(input: &str) {
     for line in lines {
         update_grid_2(&mut grid, line);
     }
-    println!("Part 2: {}", grid.iter().flatten().sum::<i32>());
+    println!("2015.6 Part 2: {}", grid.iter().flatten().sum::<i32>());
 }
 
 pub fn day_6(input: &str) {

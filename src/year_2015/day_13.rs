@@ -95,7 +95,7 @@ fn just_do_it(input: &str) -> i32 {
 }
 
 pub fn day_13(input: &str) {
-    println!("Part 1: {}", just_do_it(input));
+    println!("2015.13 Part 1: {}", just_do_it(input));
 
     let part_2_injection = "\
 Alice would gain 0 happiness units by sitting next to YOU.
@@ -116,5 +116,5 @@ YOU would gain 0 happiness units by sitting next to Mallory.
     ";
 
     let input = format!("{}\n{}", input, part_2_injection);
-    println!("Part 2: {}", just_do_it(input.as_str()));
+    println!("2015.13 Part 2: {}", just_do_it(input.as_str()));
 }
