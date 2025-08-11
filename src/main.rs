@@ -4,6 +4,7 @@ use std::fs;
 
 mod runners;
 mod year_2015;
+mod year_2016;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -47,6 +48,7 @@ fn main() {
         "2015.17" => year_2015::day_17(input.as_str()),
         "2015.18" => year_2015::day_18(input.as_str()),
         "2015.19" => year_2015::day_19(input.as_str()),
+        "2016.1" => year_2016::day_1(input.as_str()),
         _ => panic!("Could not find the requested solution to compute."),
     }
 }

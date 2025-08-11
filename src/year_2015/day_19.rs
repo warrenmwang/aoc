@@ -24,7 +24,7 @@ fn part_1(molecule: String, mappings: Vec<(&str, &str)>) {
     println!("Part 1 Answer: {}", results.len());
 }
 
-fn part_2(molecule: String, mut mappings: Vec<(&str, &str)>) {
+fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     // "How long will it take to make the medicine?
     // Given the available replacements and the medicine
     // molecule in your puzzle input, what is the fewest number
@@ -37,10 +37,39 @@ fn part_2(molecule: String, mut mappings: Vec<(&str, &str)>) {
         .collect::<Vec<(String, String)>>();
     mappings.sort_by(|t1, t2| t2.1.len().cmp(&t1.1.len()));
 
+    println!("before");
     println!("{:?}", mappings);
     println!("{}", molecule);
 
-    todo!("Do part 2!");
+    let mut count = 0;
+
+    // while molecule != String::from('e') {
+    //     for (map_to, map_from) in mappings.into_iter() {
+    //         molecule = molecule.replace(&map_from, &map_to);
+    //         count += 1;
+    //     }
+    // }
+
+    // for (map_to, map_from) in mappings {
+    //     while molecule.contains(&map_from) {
+    //         molecule = molecule.replace(&map_from, &map_to);
+    //         count += 1;
+
+    //         if molecule == String::from("e") {
+    //             println!("Part 2: {}", count);
+    //             return;
+    //         }
+    //     }
+    // }
+
+    println!("unfinished molecule: {}", molecule);
+    println!("count: {}", count)
+
+    // println!("after");
+    // println!("{}", molecule);
+    // println!("{}", molecule);
+
+    // todo!("Do part 2!");
 }
 
 pub fn day_19(input: &str) {
