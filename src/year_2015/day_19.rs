@@ -30,54 +30,19 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     // molecule in your puzzle input, what is the fewest number
     // of steps to go from e to the medicine molecule?"
 
-    // TODO: simple greedy approach, taking the longest matching reverse rule always?
-    let mut mappings = mappings
-        .iter_mut()
-        .map(|&mut (s1, s2)| (s1.to_string(), s2.to_string()))
-        .collect::<Vec<(String, String)>>();
-    mappings.sort_by(|t1, t2| t2.1.len().cmp(&t1.1.len()));
+    // try trimming search space?
+    // remove rules that generate sequence including "CRn" which is useless by my analysis.
+    // yea idk wtf is going on with this one
 
     println!("before");
     println!("{:?}", mappings);
     println!("{}", molecule);
     println!("2015.19 WIP");
-
-    // let mut count = 0;
-
-    // while molecule != String::from('e') {
-    //     for (map_to, map_from) in mappings.into_iter() {
-    //         molecule = molecule.replace(&map_from, &map_to);
-    //         count += 1;
-    //     }
-    // }
-
-    // for (map_to, map_from) in mappings {
-    //     while molecule.contains(&map_from) {
-    //         molecule = molecule.replace(&map_from, &map_to);
-    //         count += 1;
-
-    //         if molecule == String::from("e") {
-    //             println!("2015.19 Part 2: {}", count);
-    //             return;
-    //         }
-    //     }
-    // }
-
-    // println!("unfinished molecule: {}", molecule);
-    // println!("count: {}", count)
-
-    // println!("after");
-    // println!("{}", molecule);
-    // println!("{}", molecule);
-
-    // todo!("Do part 2!");
+    todo!();
 }
 
 pub fn day_19(input: &str) {
     // https://adventofcode.com/2015/day/19
-
-    // let input = fs::read_to_string("test.txt").unwrap();
-
     let input = input.replace("\r", "");
     let input: Vec<&str> = input.trim().split("\n").collect();
 
