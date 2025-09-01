@@ -43,7 +43,6 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
 
 pub fn day_19(input: &str) {
     // https://adventofcode.com/2015/day/19
-    let input = input.replace("\r", "");
     let input: Vec<&str> = input.trim().split("\n").collect();
 
     let mut mappings: Vec<(&str, &str)> = Vec::new();

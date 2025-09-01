@@ -16,9 +16,7 @@ fn just_do_it(input: &str) -> i32 {
     // the arrow is coming out of
 
     // parsing input
-    let input = String::from(input.trim())
-        .replace(".", "")
-        .replace("\r", "");
+    let input = String::from(input.trim()).replace(".", "");
     let lines: Vec<&str> = input.split("\n").collect();
 
     let mut names1 = Vec::new();

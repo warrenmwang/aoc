@@ -65,7 +65,6 @@ fn part_2(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
 }
 
 pub fn day_16(input: &str) {
-    let input = input.replace("\r", "");
     let input: Vec<&str> = input.trim().split("\n").collect();
 
     let mut sues: Vec<Sue> = Vec::new();

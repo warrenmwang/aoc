@@ -60,7 +60,6 @@ fn calc_score(
 }
 
 pub fn day_15(input: &str) {
-    let input = input.replace("\r", "");
     let lines: Vec<&str> = input.trim().split("\n").collect();
 
     let mut ingredients: Vec<Ingredient> = Vec::new();

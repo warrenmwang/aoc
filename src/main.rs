@@ -48,6 +48,7 @@ fn run_one_solution(solution_id: &str, solutions: &HashMap<&'static str, fn(&str
     let day = parts[1];
     let input = fs::read_to_string(format!("inputs/year_{}/day_{}.txt", year, day))
         .expect("Input file not found.");
+    let input = input.replace("\r", "");
     let input = input.as_str();
     if !solutions.contains_key(solution_id) {
         panic!("solution id not found: {}", solution_id);

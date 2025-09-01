@@ -126,7 +126,6 @@ fn count_combinations_part_two(
 pub fn day_17(input: &str) {
     let target = 150;
 
-    let input = input.replace("\r", "");
     let input: Vec<&str> = input.trim().split("\n").collect();
 
     let containers: Vec<i32> = input.iter().map(|x| x.parse().unwrap()).collect();

@@ -189,7 +189,6 @@ fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
 }
 
 pub fn day_18(input: &str) {
-    let input = input.replace("\r", "");
     let input: Vec<&str> = input.trim().split("\n").collect();
 
     let mut grid_1: Vec<Vec<u8>> = vec![vec![0; 100]; 100];
