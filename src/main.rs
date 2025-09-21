@@ -1,7 +1,8 @@
 use core::panic;
 use std::collections::HashMap;
 use std::env;
-use std::fs;
+use std::sync::{Arc, Mutex};
+use std::{fs, num::NonZeroUsize, thread};
 
 mod year_2015;
 mod year_2016;
@@ -39,7 +40,7 @@ fn setup_solutions() -> (
     (vec, map)
 }
 
-fn run_one_solution(solution_id: &str, solutions: &HashMap<&'static str, fn(&str)>) {
+fn run_solution(solution_id: &str, solution_fn: &fn(&str)) {
     let parts: Vec<&str> = solution_id.split(".").collect();
     if parts.len() != 2 {
         panic!("Incorrect format for solution id found. Expect `<year>.<day>`");
@@ -50,11 +51,81 @@ fn run_one_solution(solution_id: &str, solutions: &HashMap<&'static str, fn(&str
         .expect("Input file not found.");
     let input = input.replace("\r", "");
     let input = input.as_str();
-    if !solutions.contains_key(solution_id) {
-        panic!("solution id not found: {}", solution_id);
-    }
-    let solution_fn = solutions.get(solution_id).unwrap();
     solution_fn(input);
+}
+
+pub fn run_all_solutions(solutions: Vec<(&'static str, fn(&str))>) {
+    let num_cpus = match thread::available_parallelism() {
+        Ok(num_cpus) => num_cpus.get(),
+        Err(_) => 1,
+    };
+
+    if num_cpus == 1 {
+        for (solution_id, solution_fn) in solutions.iter() {
+            run_solution(solution_id, solution_fn);
+        }
+        return;
+    }
+
+    let num_work = solutions.len();
+
+    let num_cpus = num_cpus / 2; // NOTE: use half of available cores
+
+    println!("num cpus: {}", num_cpus);
+    println!("num sols: {}", num_work);
+
+    let mut num_threads_to_use = num_cpus;
+    let solutions = Arc::new(solutions);
+
+    // TODO: want a nice way to print solutions in an ordered way when run in parallel
+    // with different finish times for each solution computed
+    if num_work <= num_cpus {
+        num_threads_to_use = num_work;
+        let mut handles = Vec::new();
+
+        for i in 0..num_threads_to_use {
+            let solutions_shared = Arc::clone(&solutions);
+            let handle = thread::spawn(move || {
+                let tuple = solutions_shared.get(i).unwrap();
+                let solution_id = tuple.0;
+                let solution_fn = &tuple.1;
+                run_solution(solution_id, solution_fn);
+            });
+            handles.push(handle);
+        }
+
+        for handle in handles {
+            handle.join().expect("Thread panicked.");
+        }
+
+        return;
+    }
+
+    let work_index = Arc::new(Mutex::new(0));
+    let mut handles = Vec::new();
+
+    for _ in 0..num_threads_to_use {
+        let work_index = Arc::clone(&work_index);
+        let solutions_shared = Arc::clone(&solutions);
+        let handle = thread::spawn(move || {
+            loop {
+                let mut curr_work_index = work_index.lock().unwrap();
+                if *curr_work_index >= num_work {
+                    return;
+                }
+                let tuple = solutions_shared.get(*curr_work_index).unwrap();
+                *curr_work_index += 1;
+                drop(curr_work_index);
+                let solution_id = tuple.0;
+                let solution_fn = &tuple.1;
+                run_solution(solution_id, solution_fn);
+            }
+        });
+        handles.push(handle);
+    }
+    for handle in handles {
+        handle.join().expect("Thread panicked.");
+    }
 }
 
 fn main() {
@@ -64,15 +135,22 @@ fn main() {
             "Incorrect number of arguments, need the year and day to compute a particular solution (e.g. 2015.1). Or provide 'all' to indicate running ALL available solutions in repository."
         );
     }
-    let solution_id = &args[1];
+    let solution_id = args[1].as_str();
 
     let (solutions_vec, solutions_map) = setup_solutions();
-    match solution_id.as_str() {
+    match solution_id {
         "all" => {
-            for (k, _) in solutions_vec {
-                run_one_solution(k, &solutions_map); // TODO: could parallelize this
-            }
+            run_all_solutions(solutions_vec);
         }
-        _ => run_one_solution(solution_id, &solutions_map),
+        _ => {
+            let solution_fn = match solutions_map.get(solution_id) {
+                Some(solution_fn) => solution_fn,
+                None => {
+                    println!("Unable to find the solution {}", solution_id);
+                    return;
+                }
+            };
+            run_solution(solution_id, solution_fn);
+        }
     }
 }

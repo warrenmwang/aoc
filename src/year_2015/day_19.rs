@@ -34,11 +34,11 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     // remove rules that generate sequence including "CRn" which is useless by my analysis.
     // yea idk wtf is going on with this one
 
-    println!("before");
-    println!("{:?}", mappings);
-    println!("{}", molecule);
-    println!("2015.19 WIP");
-    todo!();
+    // TODO:
+    // println!("before");
+    // println!("{:?}", mappings);
+    // println!("{}", molecule);
+    println!("2015.19 Part 2 Answer: WIP");
 }
 
 pub fn day_19(input: &str) {
