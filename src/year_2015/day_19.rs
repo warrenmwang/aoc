@@ -21,7 +21,7 @@ fn part_1(molecule: String, mappings: Vec<(&str, &str)>) {
         }
     }
 
-    println!("2015.19 Part 1 Answer: {}", results.len());
+    println!("2015.19 Part 1: {}", results.len());
 }
 
 fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
@@ -38,7 +38,7 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     // println!("before");
     // println!("{:?}", mappings);
     // println!("{}", molecule);
-    println!("2015.19 Part 2 Answer: WIP");
+    println!("2015.19 Part 2: WIP");
 }
 
 pub fn day_19(input: &str) {

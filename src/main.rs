@@ -2,7 +2,7 @@ use core::panic;
 use std::collections::HashMap;
 use std::env;
 use std::sync::{Arc, Mutex};
-use std::{fs, num::NonZeroUsize, thread};
+use std::{fs, thread};
 
 mod year_2015;
 mod year_2016;
@@ -40,7 +40,7 @@ fn setup_solutions() -> (
     (vec, map)
 }
 
-fn run_solution(solution_id: &str, solution_fn: &fn(&str)) {
+fn run_solution(solution_id: &str, solution_fn: fn(&str)) {
     let parts: Vec<&str> = solution_id.split(".").collect();
     if parts.len() != 2 {
         panic!("Incorrect format for solution id found. Expect `<year>.<day>`");
@@ -60,19 +60,18 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(&str))>) {
         Err(_) => 1,
     };
 
-    if num_cpus == 1 {
-        for (solution_id, solution_fn) in solutions.iter() {
-            run_solution(solution_id, solution_fn);
-        }
-        return;
-    }
-
     let num_work = solutions.len();
-
     let num_cpus = num_cpus / 2; // NOTE: use half of available cores
 
     println!("num cpus: {}", num_cpus);
     println!("num sols: {}", num_work);
+
+    if num_cpus == 1 {
+        for (solution_id, solution_fn) in solutions.iter() {
+            run_solution(solution_id, *solution_fn);
+        }
+        return;
+    }
 
     let mut num_threads_to_use = num_cpus;
     let solutions = Arc::new(solutions);
@@ -88,7 +87,7 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(&str))>) {
             let handle = thread::spawn(move || {
                 let tuple = solutions_shared.get(i).unwrap();
                 let solution_id = tuple.0;
-                let solution_fn = &tuple.1;
+                let solution_fn = tuple.1;
                 run_solution(solution_id, solution_fn);
             });
             handles.push(handle);
@@ -117,7 +116,7 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(&str))>) {
                 *curr_work_index += 1;
                 drop(curr_work_index);
                 let solution_id = tuple.0;
-                let solution_fn = &tuple.1;
+                let solution_fn = tuple.1;
                 run_solution(solution_id, solution_fn);
             }
         });
@@ -134,6 +133,7 @@ fn main() {
         println!(
             "Incorrect number of arguments, need the year and day to compute a particular solution (e.g. 2015.1). Or provide 'all' to indicate running ALL available solutions in repository."
         );
+        return;
     }
     let solution_id = args[1].as_str();
 
@@ -144,7 +144,7 @@ fn main() {
         }
         _ => {
             let solution_fn = match solutions_map.get(solution_id) {
-                Some(solution_fn) => solution_fn,
+                Some(solution_fn) => *solution_fn,
                 None => {
                     println!("Unable to find the solution {}", solution_id);
                     return;

@@ -5,7 +5,8 @@ are meant to solve by writing some small programs.
 
 ## Getting Started
 
-Example cmds to setup the dev shell (you need to have [nix](https://nixos.org/) package manager) and run solution to 2015 day 1:
+### Nix
+Relatively straightforward if using [nix](https://nixos.org/) and/or [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) to run the first solution:
 ```
 $ nix-shell
 $ cargo run 2015.1
