@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 
+use crate::{SolutionInput, terminal};
+
 struct Sue {
     id: u16,
     properties: HashMap<String, u8>,
 }
 
-fn part_1(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
+fn part_1(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) -> u16 {
     // loop over all sues and check against the MFCSAM detected compounds.
     // denote the correct Sue by the most number of matched exact compounds.
     let mut most_match_num = 0;
@@ -24,14 +26,11 @@ fn part_1(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
             best_sue_match = Some(sue);
         }
     }
-    if let Some(sue) = best_sue_match {
-        println!("2015.16 Part 1: {}", sue.id);
-    } else {
-        println!("2015.16 Part 1: Oh no! We couldn't find a matching Sue...");
-    }
+    let sue = best_sue_match.unwrap();
+    return sue.id;
 }
 
-fn part_2(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
+fn part_2(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) -> u16 {
     // same as part 1 but with more conditionals
     let mut most_match_num = 0;
     let mut best_sue_match: Option<&Sue> = None;
@@ -57,18 +56,15 @@ fn part_2(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) {
             best_sue_match = Some(sue);
         }
     }
-    if let Some(sue) = best_sue_match {
-        println!("2015.16 Part 2: {}", sue.id);
-    } else {
-        println!("2015.16 Part 2: Oh no! We couldn't find a matching Sue...");
-    }
+    let sue = best_sue_match.unwrap();
+    return sue.id;
 }
 
-pub fn day_16(input: &str) {
-    let input: Vec<&str> = input.trim().split("\n").collect();
+pub fn day_16(input: SolutionInput) {
+    let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut sues: Vec<Sue> = Vec::new();
-    for line in input {
+    for line in text_input {
         let (sue_id_part, sue_properties_part) = line.split_once(": ").unwrap();
         let id = sue_id_part.split(" ").collect::<Vec<&str>>()[1]
             .parse::<u16>()
@@ -103,6 +99,13 @@ pub fn day_16(input: &str) {
     .into_iter()
     .collect();
 
-    part_1(&sues, &mfcsam_result);
-    part_2(&sues, &mfcsam_result);
+    if input.run_in_standalone {
+        println!("2015.16 Part 1: {}", part_1(&sues, &mfcsam_result));
+        println!("2015.16 Part 2: {}", part_2(&sues, &mfcsam_result));
+    } else {
+        let part_1_result = format!("2015.16 Part 1: {}", part_1(&sues, &mfcsam_result));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2015.16 Part 2: {}", part_2(&sues, &mfcsam_result));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

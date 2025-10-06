@@ -4,14 +4,21 @@ use std::env;
 use std::sync::{Arc, Mutex};
 use std::{fs, thread};
 
+mod terminal;
 mod year_2015;
 mod year_2016;
 
+pub struct SolutionInput<'a> {
+    text_input: &'a str,
+    run_in_standalone: bool,
+    stdout_start_line: usize,
+}
+
 fn setup_solutions() -> (
-    Vec<(&'static str, fn(&str))>,
-    HashMap<&'static str, fn(&str)>,
+    Vec<(&'static str, fn(SolutionInput))>,
+    HashMap<&'static str, fn(SolutionInput)>,
 ) {
-    let mut vec: Vec<(&'static str, fn(&str))> = Vec::new();
+    let mut vec: Vec<(&'static str, fn(SolutionInput))> = Vec::new();
     vec.push(("2015.1", year_2015::day_1));
     vec.push(("2015.2", year_2015::day_2));
     vec.push(("2015.3", year_2015::day_3));
@@ -33,14 +40,14 @@ fn setup_solutions() -> (
     vec.push(("2015.19", year_2015::day_19));
     vec.push(("2016.1", year_2016::day_1));
 
-    let mut map: HashMap<&'static str, fn(&str)> = HashMap::new();
+    let mut map: HashMap<&'static str, fn(SolutionInput)> = HashMap::new();
     for (k, v) in vec.iter().clone() {
         map.insert(k, *v);
     }
     (vec, map)
 }
 
-fn run_solution(solution_id: &str, solution_fn: fn(&str)) {
+fn run_solution_standalone(solution_id: &str, solution_fn: fn(SolutionInput)) {
     let parts: Vec<&str> = solution_id.split(".").collect();
     if parts.len() != 2 {
         panic!("Incorrect format for solution id found. Expect `<year>.<day>`");
@@ -51,44 +58,80 @@ fn run_solution(solution_id: &str, solution_fn: fn(&str)) {
         .expect("Input file not found.");
     let input = input.replace("\r", "");
     let input = input.as_str();
+    let input = SolutionInput {
+        text_input: input,
+        run_in_standalone: true,
+        stdout_start_line: 0,
+    };
     solution_fn(input);
 }
 
-pub fn run_all_solutions(solutions: Vec<(&'static str, fn(&str))>) {
+fn run_solution_parallel(
+    solution_id: &str,
+    solution_fn: fn(SolutionInput),
+    thread_stdout_start_line: usize,
+) {
+    let parts: Vec<&str> = solution_id.split(".").collect();
+    if parts.len() != 2 {
+        panic!("Incorrect format for solution id found. Expect `<year>.<day>`");
+    }
+    let year = parts[0];
+    let day = parts[1];
+    let input = fs::read_to_string(format!("inputs/year_{}/day_{}.txt", year, day))
+        .expect("Input file not found.");
+    let input = input.replace("\r", "");
+    let input = input.as_str();
+    let input = SolutionInput {
+        text_input: input,
+        run_in_standalone: false,
+        stdout_start_line: thread_stdout_start_line,
+    };
+    solution_fn(input);
+}
+
+pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
     let num_cpus = match thread::available_parallelism() {
         Ok(num_cpus) => num_cpus.get(),
         Err(_) => 1,
     };
 
     let num_work = solutions.len();
-    let num_cpus = num_cpus / 2; // NOTE: use half of available cores
+    let num_threads_to_use = num_cpus / 2; // NOTE: use half of available cores
 
-    println!("num cpus: {}", num_cpus);
-    println!("num sols: {}", num_work);
+    terminal::clear_stdout();
+    terminal::print_at_line_stdout(1, "--------------------");
+    terminal::print_at_line_stdout(2, "Let the solutions roll!...");
+    terminal::print_at_line_stdout(3, format!("num sols: {}", num_work));
+    terminal::print_at_line_stdout(4, format!("num cpus: {}", num_cpus));
+    terminal::print_at_line_stdout(5, format!("num threads using: {}", num_threads_to_use));
+    let stdout_lines_for_each = 2;
+    let stdout_header_lines_offset = 6;
 
     if num_cpus == 1 {
         for (solution_id, solution_fn) in solutions.iter() {
-            run_solution(solution_id, *solution_fn);
+            run_solution_standalone(solution_id, *solution_fn);
         }
         return;
     }
 
-    let mut num_threads_to_use = num_cpus;
     let solutions = Arc::new(solutions);
+    terminal::create_n_newlines(num_work); // prepare enough empty terminal rows for printing solutions
 
-    // TODO: want a nice way to print solutions in an ordered way when run in parallel
-    // with different finish times for each solution computed
-    if num_work <= num_cpus {
-        num_threads_to_use = num_work;
+    // One thread per solution.
+    if num_work <= num_threads_to_use {
         let mut handles = Vec::new();
 
-        for i in 0..num_threads_to_use {
+        for work_index in 0..num_work {
             let solutions_shared = Arc::clone(&solutions);
             let handle = thread::spawn(move || {
-                let tuple = solutions_shared.get(i).unwrap();
+                let tuple = solutions_shared.get(work_index).unwrap();
                 let solution_id = tuple.0;
                 let solution_fn = tuple.1;
-                run_solution(solution_id, solution_fn);
+                run_solution_parallel(
+                    solution_id,
+                    solution_fn,
+                    (work_index * stdout_lines_for_each) + stdout_header_lines_offset,
+                );
             });
             handles.push(handle);
         }
@@ -96,35 +139,46 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(&str))>) {
         for handle in handles {
             handle.join().expect("Thread panicked.");
         }
-
-        return;
     }
 
-    let work_index = Arc::new(Mutex::new(0));
-    let mut handles = Vec::new();
+    if num_work > num_threads_to_use {
+        let work_index = Arc::new(Mutex::new(0));
+        let mut handles = Vec::new();
 
-    for _ in 0..num_threads_to_use {
-        let work_index = Arc::clone(&work_index);
-        let solutions_shared = Arc::clone(&solutions);
-        let handle = thread::spawn(move || {
-            loop {
-                let mut curr_work_index = work_index.lock().unwrap();
-                if *curr_work_index >= num_work {
-                    return;
+        // Use max number of allowed threads to round robin compute all solutions.
+        for _ in 0..num_threads_to_use {
+            let work_index = Arc::clone(&work_index);
+            let solutions_shared = Arc::clone(&solutions);
+            let handle = thread::spawn(move || {
+                loop {
+                    let mut curr_work_index_guard = work_index.lock().unwrap();
+                    if *curr_work_index_guard >= num_work {
+                        return;
+                    }
+                    let curr_work_index_val_copy = *curr_work_index_guard;
+                    let tuple = solutions_shared.get(*curr_work_index_guard).unwrap();
+                    *curr_work_index_guard += 1;
+                    drop(curr_work_index_guard);
+                    let solution_id = tuple.0;
+                    let solution_fn = tuple.1;
+                    run_solution_parallel(
+                        solution_id,
+                        solution_fn,
+                        (curr_work_index_val_copy * stdout_lines_for_each)
+                            + stdout_header_lines_offset,
+                    );
                 }
-                let tuple = solutions_shared.get(*curr_work_index).unwrap();
-                *curr_work_index += 1;
-                drop(curr_work_index);
-                let solution_id = tuple.0;
-                let solution_fn = tuple.1;
-                run_solution(solution_id, solution_fn);
-            }
-        });
-        handles.push(handle);
+            });
+            handles.push(handle);
+        }
+
+        for handle in handles {
+            handle.join().expect("Thread panicked.");
+        }
     }
-    for handle in handles {
-        handle.join().expect("Thread panicked.");
-    }
+
+    terminal::move_cursor_to((num_work * stdout_lines_for_each) + stdout_header_lines_offset + 1);
+    println!();
 }
 
 fn main() {
@@ -150,7 +204,7 @@ fn main() {
                     return;
                 }
             };
-            run_solution(solution_id, solution_fn);
+            run_solution_standalone(solution_id, solution_fn);
         }
     }
 }

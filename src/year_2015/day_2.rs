@@ -1,6 +1,8 @@
 use std::cmp::min;
 
-fn part_1(input: &str) {
+use crate::{SolutionInput, terminal};
+
+fn part_1(input: &str) -> i32 {
     let mut total = 0;
     let lines: Vec<&str> = input.trim().split("\n").collect();
     for line in lines {
@@ -15,10 +17,10 @@ fn part_1(input: &str) {
 
         total += 2 * s1 + 2 * s2 + 2 * s3 + min(s1, min(s2, s3));
     }
-    println!("2015.2 Part 1: {}", total);
+    total
 }
 
-fn part_2(input: &str) {
+fn part_2(input: &str) -> i32 {
     let mut total = 0;
     let lines: Vec<&str> = input.trim().split("\n").collect();
     for line in lines {
@@ -34,10 +36,17 @@ fn part_2(input: &str) {
 
         total += 2 * s1 + 2 * s2 + (s1 * s2 * s3);
     }
-    println!("2015.2 Part 2: {}", total);
+    total
 }
 
-pub fn day_2(input: &str) {
-    part_1(input);
-    part_2(input);
+pub fn day_2(input: SolutionInput) {
+    if input.run_in_standalone {
+        println!("2015.2 Part 1: {}", part_1(input.text_input));
+        println!("2015.2 Part 2: {}", part_2(input.text_input));
+    } else {
+        let part_1_result = format!("2015.2 Part 1: {}", part_1(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2015.2 Part 2: {}", part_2(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

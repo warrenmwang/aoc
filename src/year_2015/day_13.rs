@@ -1,6 +1,8 @@
 use itertools::Itertools;
 use std::collections::HashMap;
 
+use crate::{SolutionInput, terminal};
+
 // each is supposed to be the addition of the gained happiness
 // of both directions of person1 <-> person2 and person2 <-> person1
 fn get_edge(m: &Vec<Vec<i32>>, lookup: &HashMap<String, usize>, k1: &str, k2: &str) -> i32 {
@@ -92,8 +94,13 @@ fn just_do_it(input: &str) -> i32 {
     max_gained_happiness
 }
 
-pub fn day_13(input: &str) {
-    println!("2015.13 Part 1: {}", just_do_it(input));
+pub fn day_13(input: SolutionInput) {
+    let part_1_result = format!("2015.13 Part 1: {}", just_do_it(input.text_input));
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+    }
 
     let part_2_injection = "\
 Alice would gain 0 happiness units by sitting next to YOU.
@@ -113,6 +120,11 @@ YOU would gain 0 happiness units by sitting next to George.
 YOU would gain 0 happiness units by sitting next to Mallory.
     ";
 
-    let input = format!("{}\n{}", input, part_2_injection);
-    println!("2015.13 Part 2: {}", just_do_it(input.as_str()));
+    let text_input = format!("{}\n{}", input.text_input, part_2_injection);
+    let part_2_result = format!("2015.13 Part 2: {}", just_do_it(text_input.as_str()));
+    if input.run_in_standalone {
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

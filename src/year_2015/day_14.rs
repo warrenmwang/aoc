@@ -1,3 +1,5 @@
+use crate::{SolutionInput, terminal};
+
 struct Reindeer {
     speed: u32,
     fly_time: u32,
@@ -32,9 +34,9 @@ impl Reindeer {
     }
 }
 
-pub fn day_14(input: &str) {
+pub fn day_14(input: SolutionInput) {
     // parse the reindeer info
-    let lines: Vec<&str> = input.trim().split("\n").collect();
+    let lines: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut reindeer: Vec<Reindeer> = Vec::new();
     for line in lines {
@@ -81,6 +83,13 @@ pub fn day_14(input: &str) {
         }
     });
 
-    println!("2015.14 Part 1: {}", max_distance);
-    println!("2015.14 Part 2: {}", max_points);
+    let part_1_result = format!("2015.14 Part 1: {}", max_distance);
+    let part_2_result = format!("2015.14 Part 2: {}", max_points);
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

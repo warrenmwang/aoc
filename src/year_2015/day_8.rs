@@ -1,3 +1,5 @@
+use crate::{SolutionInput, terminal};
+
 // count num chars string given in code form would be in mem form
 fn len_str_in_mem(s: &str) -> i32 {
     let s = String::from(s);
@@ -42,20 +44,27 @@ fn len_str_in_code(s: &str) -> i32 {
     len
 }
 
-pub fn day_8(input: &str) {
-    let input: Vec<&str> = input.trim().split("\n").collect();
+pub fn day_8(input: SolutionInput) {
+    let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut num_code_chars: i32 = 0;
     let mut num_mem_chars: i32 = 0;
 
     let mut num_encoded_chars: i32 = 0;
 
-    for s in input {
+    for s in text_input {
         num_code_chars += s.len() as i32;
         num_mem_chars += len_str_in_mem(s);
         num_encoded_chars += len_str_in_code(s);
     }
 
-    println!("2015.8 Part 1: {}", num_code_chars - num_mem_chars);
-    println!("2015.8 Part 2: {}", num_encoded_chars - num_code_chars);
+    let part_1_result = format!("2015.8 Part 1: {}", num_code_chars - num_mem_chars);
+    let part_2_result = format!("2015.8 Part 2: {}", num_encoded_chars - num_code_chars);
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

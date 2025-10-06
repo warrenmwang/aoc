@@ -1,6 +1,8 @@
 use itertools::Itertools;
 use std::collections::HashMap;
 
+use crate::{SolutionInput, terminal};
+
 fn is_valid_path(
     path: Vec<&&&str>,
     matrix: &Vec<Vec<i32>>,
@@ -25,18 +27,18 @@ fn is_valid_path(
     Some(res)
 }
 
-pub fn day_9(input: &str) {
+pub fn day_9(input: SolutionInput) {
     // shortest hamiltonian path problem
     // the graph looks small enough for us to just brute force it
     // as opposed to use an alg like held-karp
     // 8 nodes -> 8! -> 40320
-    let input: Vec<&str> = input.trim().split("\n").collect();
+    let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut nodes_map: HashMap<&str, usize> = HashMap::new();
     let mut counter: usize = 0;
 
     // get set of unqiue nodes in graph
-    for l in input.clone().into_iter() {
+    for l in text_input.clone().into_iter() {
         let parts: Vec<&str> = l.split(" ").collect();
         let x1 = parts[0];
         let x2 = parts[2];
@@ -65,7 +67,7 @@ pub fn day_9(input: &str) {
         }
     }
     // add valid edges
-    for l in input.into_iter() {
+    for l in text_input.into_iter() {
         let parts: Vec<&str> = l.split(" ").collect();
         let x1 = parts[0];
         let x2 = parts[2];
@@ -94,6 +96,13 @@ pub fn day_9(input: &str) {
         }
     }
 
-    println!("2015.9 Part 1: {}", smallest_path);
-    println!("2015.9 Part 2: {}", longest_path);
+    if input.run_in_standalone {
+        println!("2015.9 Part 1: {}", smallest_path);
+        println!("2015.9 Part 2: {}", longest_path);
+    } else {
+        let part_1_result = format!("2015.9 Part 1: {}", smallest_path);
+        let part_2_result = format!("2015.9 Part 2: {}", longest_path);
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

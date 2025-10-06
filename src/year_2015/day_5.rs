@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::{SolutionInput, terminal};
+
 fn is_nice(s: &String) -> bool {
     let mut vowels: Vec<char> = Vec::new();
     let mut twice_in_row = false;
@@ -30,7 +32,7 @@ fn is_nice(s: &String) -> bool {
     vowels.len() >= 3 && twice_in_row
 }
 
-fn part_1(input: &str) {
+fn part_1(input: &str) -> i32 {
     let lines: Vec<&str> = input.trim().split("\n").collect();
     let mut num_nice = 0;
     for line in lines {
@@ -38,7 +40,7 @@ fn part_1(input: &str) {
             num_nice += 1;
         }
     }
-    println!("2015.5 Part 1: {}", num_nice);
+    num_nice
 }
 
 fn is_nice_too(input: &String) -> bool {
@@ -72,7 +74,7 @@ fn is_nice_too(input: &String) -> bool {
     double_pair && triplet
 }
 
-fn part_2(input: &str) {
+fn part_2(input: &str) -> i32 {
     let lines: Vec<&str> = input.trim().split("\n").collect();
     let mut num_nice_too = 0;
 
@@ -81,11 +83,17 @@ fn part_2(input: &str) {
             num_nice_too += 1
         }
     }
-
-    println!("2015.5 Part 2: {}", num_nice_too);
+    num_nice_too
 }
 
-pub fn day_5(input: &str) {
-    part_1(input);
-    part_2(input);
+pub fn day_5(input: SolutionInput) {
+    if input.run_in_standalone {
+        println!("2015.5 Part 1: {}", part_1(input.text_input));
+        println!("2015.5 Part 2: {}", part_2(input.text_input));
+    } else {
+        let part_1_result = format!("2015.5 Part 1: {}", part_1(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2015.5 Part 2: {}", part_2(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

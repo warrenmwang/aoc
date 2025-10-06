@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::{SolutionInput, terminal};
+
 // cached_results key: (target_sum, current index into the containers array)
 // cached_results value: number of valid combinations that sum to target_sum
 //
@@ -123,12 +125,12 @@ fn count_combinations_part_two(
     take_result + not_take_result
 }
 
-pub fn day_17(input: &str) {
+pub fn day_17(input: SolutionInput) {
     let target = 150;
 
-    let input: Vec<&str> = input.trim().split("\n").collect();
+    let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
-    let containers: Vec<i32> = input.iter().map(|x| x.parse().unwrap()).collect();
+    let containers: Vec<i32> = text_input.iter().map(|x| x.parse().unwrap()).collect();
     // println!("target: {}", target);
     // println!("containers: {:?}", containers);
 
@@ -136,7 +138,12 @@ pub fn day_17(input: &str) {
     let mut cached_results: HashMap<(i32, usize), u32> = HashMap::new();
     let part_1_count = count_combinations(target, current_index, &containers, &mut cached_results);
 
-    println!("2015.17 Part 1: {}", part_1_count);
+    let part_1_result = format!("2015.17 Part 1: {}", part_1_count);
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+    }
     // part 1: 1638
 
     // part 2: count minimum number of containers amongst valid combinations
@@ -164,11 +171,10 @@ pub fn day_17(input: &str) {
             }
         }
     }
-
-    if let Some(res) = part_2_result {
-        // println!("minimum containers needed: {}", min.unwrap());
-        println!("2015.17 Part 2: {}", res);
+    let part_2_result = format!("2015.17 Part 2: {}", part_2_result.unwrap());
+    if input.run_in_standalone {
+        println!("{}", part_2_result);
     } else {
-        println!("2015.17 OH NO! We didn't get a result for part 2!");
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
     }
 }

@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 
+use crate::{SolutionInput, terminal};
+
 fn get_next_orientation(direction: char, orientation: &mut u8) {
     match direction {
         'L' => {
@@ -42,7 +44,7 @@ fn update_position(orientation: &u8, num_steps: u32, x: &mut i32, y: &mut i32) {
     }
 }
 
-fn part_1(input: &str) {
+fn part_1(input: &str) -> i32 {
     let mut orientation: u8 = 0; // north 0, east 1, south 2, west 3
     let mut x = 0;
     let mut y = 0;
@@ -54,10 +56,10 @@ fn part_1(input: &str) {
         get_next_orientation(direction, &mut orientation);
         update_position(&orientation, num_steps, &mut x, &mut y);
     }
-    println!("2016.1 Part 1: {}", x.abs() + y.abs());
+    x.abs() + y.abs()
 }
 
-fn part_2(input: &str) {
+fn part_2(input: &str) -> i32 {
     let mut visited: HashSet<String> = HashSet::new();
     let mut found_first_visited_twice = false;
 
@@ -89,10 +91,17 @@ fn part_2(input: &str) {
             break;
         }
     }
-    println!("2016.1 Part 2: {}", x.abs() + y.abs());
+    x.abs() + y.abs()
 }
 
-pub fn day_1(input: &str) {
-    part_1(&input);
-    part_2(&input);
+pub fn day_1(input: SolutionInput) {
+    if input.run_in_standalone {
+        println!("2016.1 Part 1: {}", part_1(input.text_input));
+        println!("2016.1 Part 2: {}", part_2(input.text_input));
+    } else {
+        let part_1_result = format!("2016.1 Part 1: {}", part_1(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2016.1 Part 2: {}", part_2(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 
+use crate::{SolutionInput, terminal};
+
 fn update_pos(pos: &mut (i32, i32), c: char) {
     match c {
         '^' => {
@@ -18,7 +20,7 @@ fn update_pos(pos: &mut (i32, i32), c: char) {
     }
 }
 
-fn part_1(input: &str) {
+fn part_1(input: &str) -> usize {
     let mut pos = (0, 0);
     let mut visited: HashSet<(i32, i32)> = HashSet::new();
     visited.insert((0, 0));
@@ -28,10 +30,10 @@ fn part_1(input: &str) {
         visited.insert(pos);
     }
 
-    println!("2015.3 Part 1: {}", visited.len());
+    visited.len()
 }
 
-fn part_2(input: &str) {
+fn part_2(input: &str) -> usize {
     let mut pos1 = (0, 0);
     let mut pos2 = (0, 0);
     let mut visited: HashSet<(i32, i32)> = HashSet::new();
@@ -44,11 +46,17 @@ fn part_2(input: &str) {
             visited.insert(pos2);
         }
     }
-
-    println!("2015.3 Part 2: {}", visited.len());
+    visited.len()
 }
 
-pub fn day_3(input: &str) {
-    part_1(input);
-    part_2(input);
+pub fn day_3(input: SolutionInput) {
+    if input.run_in_standalone {
+        println!("2015.3 Part 1: {}", part_1(input.text_input));
+        println!("2015.3 Part 2: {}", part_2(input.text_input));
+    } else {
+        let part_1_result = format!("2015.3 Part 1: {}", part_1(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2015.3 Part 2: {}", part_2(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

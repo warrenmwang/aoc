@@ -1,3 +1,5 @@
+use crate::{SolutionInput, terminal};
+
 struct Ingredient {
     capacity: i32,
     durability: i32,
@@ -59,8 +61,8 @@ fn calc_score(
     capacity_score * durability_score * flavor_score * texture_score
 }
 
-pub fn day_15(input: &str) {
-    let lines: Vec<&str> = input.trim().split("\n").collect();
+pub fn day_15(input: SolutionInput) {
+    let lines: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut ingredients: Vec<Ingredient> = Vec::new();
     for line in lines {
@@ -94,7 +96,12 @@ pub fn day_15(input: &str) {
             }
         }
     }
-    println!("2015.15 Part 1: {}", max_score);
+    let part_1_result = format!("2015.15 Part 1: {}", max_score);
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+    }
 
     let mut max_score = 0;
     for t1 in 0..100 {
@@ -108,5 +115,10 @@ pub fn day_15(input: &str) {
             }
         }
     }
-    println!("2015.15 Part 2: {}", max_score);
+    let part_2_result = format!("2015.15 Part 2: {}", max_score);
+    if input.run_in_standalone {
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

@@ -1,3 +1,5 @@
+use crate::{SolutionInput, terminal};
+
 fn look_and_say(s: String) -> String {
     let mut count = 0;
     let mut res = String::new();
@@ -27,8 +29,8 @@ fn look_and_say(s: String) -> String {
     res
 }
 
-pub fn day_10(input: &str) {
-    let mut res = String::from(input);
+pub fn day_10(input: SolutionInput) {
+    let mut res = String::from(input.text_input);
     let mut part_1_res: String = String::new();
 
     for i in 0..50 {
@@ -38,6 +40,13 @@ pub fn day_10(input: &str) {
         }
     }
 
-    println!("2015.10 Part 1: {}", part_1_res.len());
-    println!("2015.10 Part 2: {}", res.len());
+    let part_1_result = format!("2015.10 Part 1: {}", part_1_res.len());
+    let part_2_result = format!("2015.10 Part 2: {}", res.len());
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

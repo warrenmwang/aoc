@@ -1,3 +1,5 @@
+use crate::{SolutionInput, terminal};
+
 fn increment_string(input: String) -> String {
     fn increment_char(c: char) -> (char, bool) {
         // all chars will be lowercase latin chars
@@ -80,13 +82,24 @@ fn get_next_password(curr_password: String) -> String {
     input
 }
 
-pub fn day_11(input: &str) {
-    let mut input = input.trim().to_string();
-    input = get_next_password(input);
-    println!("2015.11 Part 1: {}", input);
+pub fn day_11(input: SolutionInput) {
+    let mut text_input = input.text_input.trim().to_string();
+    text_input = get_next_password(text_input);
 
-    input = get_next_password(input);
-    println!("2015.11 Part 2: {}", input);
+    let part_1_result = format!("2015.11 Part 1: {}", text_input);
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+    }
+
+    text_input = get_next_password(text_input);
+    let part_2_result = format!("2015.11 Part 2: {}", text_input);
+    if input.run_in_standalone {
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }
 
 #[cfg(test)]

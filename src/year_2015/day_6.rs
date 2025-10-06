@@ -1,5 +1,7 @@
 use std::cmp::max;
 
+use crate::{SolutionInput, terminal};
+
 fn update_grid(grid: &mut Vec<Vec<u32>>, line: &str) {
     let tmp: Vec<&str> = line.split(" ").collect();
     let start = tmp[tmp.len() - 3]
@@ -43,13 +45,13 @@ fn update_grid(grid: &mut Vec<Vec<u32>>, line: &str) {
     }
 }
 
-fn part_1(input: &str) {
+fn part_1(input: &str) -> u32 {
     let mut grid: Vec<Vec<u32>> = vec![vec![0; 1000]; 1000];
     let lines: Vec<&str> = input.trim().split("\n").collect();
     for line in lines {
         update_grid(&mut grid, line);
     }
-    println!("2015.6 Part 1: {}", grid.iter().flatten().sum::<u32>());
+    grid.iter().flatten().sum::<u32>()
 }
 
 fn update_grid_2(grid: &mut Vec<Vec<i32>>, line: &str) {
@@ -95,16 +97,23 @@ fn update_grid_2(grid: &mut Vec<Vec<i32>>, line: &str) {
     }
 }
 
-fn part_2(input: &str) {
+fn part_2(input: &str) -> i32 {
     let mut grid: Vec<Vec<i32>> = vec![vec![0; 1000]; 1000];
     let lines: Vec<&str> = input.trim().split("\n").collect();
     for line in lines {
         update_grid_2(&mut grid, line);
     }
-    println!("2015.6 Part 2: {}", grid.iter().flatten().sum::<i32>());
+    grid.iter().flatten().sum::<i32>()
 }
 
-pub fn day_6(input: &str) {
-    part_1(input);
-    part_2(input);
+pub fn day_6(input: SolutionInput) {
+    if input.run_in_standalone {
+        println!("2015.6 Part 1: {}", part_1(input.text_input));
+        println!("2015.6 Part 2: {}", part_2(input.text_input));
+    } else {
+        let part_1_result = format!("2015.6 Part 1: {}", part_1(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2015.6 Part 2: {}", part_2(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

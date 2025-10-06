@@ -1,5 +1,7 @@
 use serde_json::Value;
 
+use crate::{SolutionInput, terminal};
+
 fn is_num(i: usize, chars: &Vec<char>) -> bool {
     let c = chars[i] as u8;
 
@@ -40,13 +42,13 @@ fn parse_nums(input: &str) -> i32 {
     res
 }
 
-fn part_1(input: &str) {
+fn part_1(input: &str) -> i32 {
     // use a json lexer and then loop over all of the pieces and
     // sum up the numbers...OR...
     // go on the path of least resistance, just loop thru all the chars and find
     // the numbers and add them together
     let res = parse_nums(input);
-    println!("2015.12 Part 1: {}", res);
+    res
 }
 
 fn parse_json_chunk(v: Value) -> i64 {
@@ -91,12 +93,19 @@ fn parse_json_chunk(v: Value) -> i64 {
     res
 }
 
-fn part_2(input: &str) {
+fn part_2(input: &str) -> i64 {
     let v: Value = serde_json::from_str(&input).unwrap();
-    println!("2015.12 Part 2: {}", parse_json_chunk(v));
+    parse_json_chunk(v)
 }
 
-pub fn day_12(input: &str) {
-    part_1(input);
-    part_2(input);
+pub fn day_12(input: SolutionInput) {
+    if input.run_in_standalone {
+        println!("2015.12 Part 1: {}", part_1(input.text_input));
+        println!("2015.12 Part 2: {}", part_2(input.text_input));
+    } else {
+        let part_1_result = format!("2015.12 Part 1: {}", part_1(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        let part_2_result = format!("2015.12 Part 2: {}", part_2(input.text_input));
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

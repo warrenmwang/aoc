@@ -3,6 +3,8 @@ use std::{
     fmt::{self},
 };
 
+use crate::{SolutionInput, terminal};
+
 #[derive(Clone)]
 pub struct Node {
     id: String,
@@ -221,9 +223,9 @@ fn calculate_from_topo(mut graph: HashMap<String, Node>, mut topo_order: Vec<Nod
     topo_order[topo_order.len() - 1].num.unwrap()
 }
 
-pub fn day_7(input: &str) {
+pub fn day_7(input: SolutionInput) {
     let desired_wire = String::from("a");
-    let lines: Vec<&str> = input.lines().collect();
+    let lines: Vec<&str> = input.text_input.lines().collect();
 
     let mut graph = build_graph(lines);
     let mut topo_order = topological_sort(&graph, desired_wire.clone());
@@ -234,7 +236,12 @@ pub fn day_7(input: &str) {
     // for the wire we want to resolve).
     let a_wire_val = calculate_from_topo(graph.clone(), topo_order.clone());
 
-    println!("2015.7 Part 1: a = {}", a_wire_val);
+    let part_1_result = format!("2015.7 Part 1: a = {}", a_wire_val);
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+    }
 
     // part 2 result
     // override b to be part 1 'a' wire value, then just
@@ -256,5 +263,10 @@ pub fn day_7(input: &str) {
 
     // finally do part 2
     let a_wire_val = calculate_from_topo(graph, topo_order);
-    println!("2015.7 Part 2: a = {}", a_wire_val);
+    let part_2_result = format!("2015.7 Part 2: a = {}", a_wire_val);
+    if input.run_in_standalone {
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

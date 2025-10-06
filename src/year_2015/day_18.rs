@@ -1,3 +1,5 @@
+use crate::{SolutionInput, terminal};
+
 // assume input in grid_1, output next state into grid_2
 fn animate(grid_1: &mut Vec<Vec<u8>>, grid_2: &mut Vec<Vec<u8>>) {
     fn check_numbers(grid: &mut Vec<Vec<u8>>, i: usize, j: usize) -> u8 {
@@ -125,7 +127,7 @@ fn animate(grid_1: &mut Vec<Vec<u8>>, grid_2: &mut Vec<Vec<u8>>) {
     }
 }
 
-fn part_1(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
+fn part_1(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) -> i32 {
     // update state by flip flopping between the 2 buffers for arbitrary N times
     let n = 100;
     for i in 0..n {
@@ -149,10 +151,10 @@ fn part_1(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
             sum += grid[i][j] as i32;
         }
     }
-    println!("2015.18 Part 1: {}", sum);
+    sum
 }
 
-fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
+fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) -> i32 {
     // update state by flip flopping between the 2 buffers for arbitrary N times
     // BUT we always make sure the corners are on!
     let n = 100;
@@ -185,18 +187,18 @@ fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) {
             sum += grid[i][j] as i32;
         }
     }
-    println!("2015.18 Part 2: {}", sum);
+    sum
 }
 
-pub fn day_18(input: &str) {
-    let input: Vec<&str> = input.trim().split("\n").collect();
+pub fn day_18(input: SolutionInput) {
+    let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut grid_1: Vec<Vec<u8>> = vec![vec![0; 100]; 100];
     let grid_2: Vec<Vec<u8>> = vec![vec![0; 100]; 100];
 
     // construct our first grid
     let mut i: usize = 0;
-    for row in input {
+    for row in text_input {
         let mut j: usize = 0;
         for c in row.trim().chars() {
             match c {
@@ -215,12 +217,22 @@ pub fn day_18(input: &str) {
         i += 1;
     }
 
-    part_1(grid_1.clone(), grid_2.clone());
+    let part_1_result = format!("2015.18 Part 1: {}", part_1(grid_1.clone(), grid_2.clone()));
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+    }
 
     // part 2: turn on the four corners at start
     grid_1[0][0] = 1;
     grid_1[0][99] = 1;
     grid_1[99][0] = 1;
     grid_1[99][99] = 1;
-    part_2(grid_1, grid_2);
+    let part_2_result = format!("2015.18 Part 2: {}", part_2(grid_1, grid_2));
+    if input.run_in_standalone {
+        println!("{}", part_2_result);
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
+    }
 }

@@ -1,6 +1,8 @@
 use std::collections::HashSet;
 
-fn part_1(molecule: String, mappings: Vec<(&str, &str)>) {
+use crate::{SolutionInput, terminal};
+
+fn part_1(molecule: String, mappings: Vec<(&str, &str)>) -> usize {
     // "How many distinct molecules can be created after all the
     // different ways you can do one replacement on the medicine molecule?"
 
@@ -21,10 +23,10 @@ fn part_1(molecule: String, mappings: Vec<(&str, &str)>) {
         }
     }
 
-    println!("2015.19 Part 1: {}", results.len());
+    results.len()
 }
 
-fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
+fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) -> usize {
     // "How long will it take to make the medicine?
     // Given the available replacements and the medicine
     // molecule in your puzzle input, what is the fewest number
@@ -38,18 +40,19 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) {
     // println!("before");
     // println!("{:?}", mappings);
     // println!("{}", molecule);
-    println!("2015.19 Part 2: WIP");
+    // println!("2015.19 Part 2: WIP");
+    0
 }
 
-pub fn day_19(input: &str) {
+pub fn day_19(input: SolutionInput) {
     // https://adventofcode.com/2015/day/19
-    let input: Vec<&str> = input.trim().split("\n").collect();
+    let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut mappings: Vec<(&str, &str)> = Vec::new();
     let mut molecule: String = String::from("");
 
     let mut flag = true;
-    for line in input {
+    for line in text_input {
         if flag {
             let parts: Vec<&str> = line.trim().split(" => ").collect();
             if parts.len() == 2 {
@@ -62,6 +65,17 @@ pub fn day_19(input: &str) {
         }
     }
 
-    part_1(molecule.clone(), mappings.clone());
-    part_2(molecule, mappings);
+    let part_1_result = format!(
+        "2015.19 Part 1: {}",
+        part_1(molecule.clone(), mappings.clone())
+    );
+    if input.run_in_standalone {
+        println!("{}", part_1_result);
+        println!("2015.19 Part 2: WIP");
+    } else {
+        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
+        terminal::print_at_line_stdout(input.stdout_start_line + 1, "2015.19 Part 2: WIP");
+    }
+
+    // part_2(molecule, mappings);
 }
