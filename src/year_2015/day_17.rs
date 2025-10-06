@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 // cached_results key: (target_sum, current index into the containers array)
 // cached_results value: number of valid combinations that sum to target_sum
@@ -128,6 +128,7 @@ fn count_combinations_part_two(
 pub fn day_17(input: SolutionInput) {
     let target = 150;
 
+    let term = input.term;
     let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let containers: Vec<i32> = text_input.iter().map(|x| x.parse().unwrap()).collect();
@@ -139,11 +140,8 @@ pub fn day_17(input: SolutionInput) {
     let part_1_count = count_combinations(target, current_index, &containers, &mut cached_results);
 
     let part_1_result = format!("2015.17 Part 1: {}", part_1_count);
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-    }
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.render();
     // part 1: 1638
 
     // part 2: count minimum number of containers amongst valid combinations
@@ -172,9 +170,6 @@ pub fn day_17(input: SolutionInput) {
         }
     }
     let part_2_result = format!("2015.17 Part 2: {}", part_2_result.unwrap());
-    if input.run_in_standalone {
-        println!("{}", part_2_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

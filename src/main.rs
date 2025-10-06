@@ -4,14 +4,16 @@ use std::env;
 use std::sync::{Arc, Mutex};
 use std::{fs, thread};
 
+use crate::terminal::Terminal;
+
 mod terminal;
 mod year_2015;
 mod year_2016;
 
 pub struct SolutionInput<'a> {
     text_input: &'a str,
-    run_in_standalone: bool,
     stdout_start_line: usize,
+    term: &'a Terminal,
 }
 
 fn setup_solutions() -> (
@@ -47,7 +49,7 @@ fn setup_solutions() -> (
     (vec, map)
 }
 
-fn run_solution_standalone(solution_id: &str, solution_fn: fn(SolutionInput)) {
+fn run_solution_standalone(solution_id: &str, solution_fn: fn(SolutionInput), term: &Terminal) {
     let parts: Vec<&str> = solution_id.split(".").collect();
     if parts.len() != 2 {
         panic!("Incorrect format for solution id found. Expect `<year>.<day>`");
@@ -60,8 +62,8 @@ fn run_solution_standalone(solution_id: &str, solution_fn: fn(SolutionInput)) {
     let input = input.as_str();
     let input = SolutionInput {
         text_input: input,
-        run_in_standalone: true,
         stdout_start_line: 0,
+        term: term,
     };
     solution_fn(input);
 }
@@ -70,6 +72,7 @@ fn run_solution_parallel(
     solution_id: &str,
     solution_fn: fn(SolutionInput),
     thread_stdout_start_line: usize,
+    term: &Terminal,
 ) {
     let parts: Vec<&str> = solution_id.split(".").collect();
     if parts.len() != 2 {
@@ -83,8 +86,8 @@ fn run_solution_parallel(
     let input = input.as_str();
     let input = SolutionInput {
         text_input: input,
-        run_in_standalone: false,
         stdout_start_line: thread_stdout_start_line,
+        term: term,
     };
     solution_fn(input);
 }
@@ -96,26 +99,38 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
     };
 
     let num_work = solutions.len();
-    let num_threads_to_use = num_cpus / 2; // NOTE: use half of available cores
-
-    terminal::clear_stdout();
-    terminal::print_at_line_stdout(1, "--------------------");
-    terminal::print_at_line_stdout(2, "Let the solutions roll!...");
-    terminal::print_at_line_stdout(3, format!("num sols: {}", num_work));
-    terminal::print_at_line_stdout(4, format!("num cpus: {}", num_cpus));
-    terminal::print_at_line_stdout(5, format!("num threads using: {}", num_threads_to_use));
+    let mut num_threads_to_use = num_cpus;
+    if num_work < num_threads_to_use {
+        num_threads_to_use = num_work;
+    }
     let stdout_lines_for_each = 2;
-    let stdout_header_lines_offset = 6;
+
+    let header_lines = [
+        String::from("--------------------"),
+        String::from("Let the solutions roll!..."),
+        format!("num sols: {}", num_work),
+        format!("num cpus: {}", num_cpus),
+        format!("num threads using: {}", num_threads_to_use),
+    ];
+    let header_lines_length = header_lines.len();
+
+    let term_total_rows = (num_work * stdout_lines_for_each) + header_lines_length;
+    let term = Arc::new(Terminal::new(term_total_rows));
+
+    for i in 0..header_lines_length {
+        term.update_line(i, header_lines[i].clone());
+    }
+    term.clean_term();
 
     if num_cpus == 1 {
+        let term = term.clone();
         for (solution_id, solution_fn) in solutions.iter() {
-            run_solution_standalone(solution_id, *solution_fn);
+            run_solution_standalone(solution_id, *solution_fn, &term);
         }
         return;
     }
 
     let solutions = Arc::new(solutions);
-    terminal::create_n_newlines(num_work); // prepare enough empty terminal rows for printing solutions
 
     // One thread per solution.
     if num_work <= num_threads_to_use {
@@ -123,6 +138,7 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
 
         for work_index in 0..num_work {
             let solutions_shared = Arc::clone(&solutions);
+            let term_shared = Arc::clone(&term);
             let handle = thread::spawn(move || {
                 let tuple = solutions_shared.get(work_index).unwrap();
                 let solution_id = tuple.0;
@@ -130,7 +146,8 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
                 run_solution_parallel(
                     solution_id,
                     solution_fn,
-                    (work_index * stdout_lines_for_each) + stdout_header_lines_offset,
+                    (work_index * stdout_lines_for_each) + header_lines_length,
+                    &term_shared,
                 );
             });
             handles.push(handle);
@@ -141,14 +158,15 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
         }
     }
 
+    // Use max number of allowed threads to round robin compute all solutions.
     if num_work > num_threads_to_use {
         let work_index = Arc::new(Mutex::new(0));
         let mut handles = Vec::new();
 
-        // Use max number of allowed threads to round robin compute all solutions.
         for _ in 0..num_threads_to_use {
             let work_index = Arc::clone(&work_index);
             let solutions_shared = Arc::clone(&solutions);
+            let term_shared = Arc::clone(&term);
             let handle = thread::spawn(move || {
                 loop {
                     let mut curr_work_index_guard = work_index.lock().unwrap();
@@ -164,8 +182,8 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
                     run_solution_parallel(
                         solution_id,
                         solution_fn,
-                        (curr_work_index_val_copy * stdout_lines_for_each)
-                            + stdout_header_lines_offset,
+                        (curr_work_index_val_copy * stdout_lines_for_each) + header_lines_length,
+                        &term_shared,
                     );
                 }
             });
@@ -176,9 +194,6 @@ pub fn run_all_solutions(solutions: Vec<(&'static str, fn(SolutionInput))>) {
             handle.join().expect("Thread panicked.");
         }
     }
-
-    terminal::move_cursor_to((num_work * stdout_lines_for_each) + stdout_header_lines_offset + 1);
-    println!();
 }
 
 fn main() {
@@ -204,7 +219,7 @@ fn main() {
                     return;
                 }
             };
-            run_solution_standalone(solution_id, solution_fn);
+            run_solution_standalone(solution_id, solution_fn, &Terminal::new(2));
         }
     }
 }

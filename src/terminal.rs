@@ -1,29 +1,56 @@
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    sync::{Arc, Mutex},
+};
 
-pub fn clear_stdout() {
-    println!("\x1b[2J");
-    io::stdout().flush().unwrap();
+pub struct Terminal {
+    buffer: Arc<Mutex<Vec<Option<String>>>>,
+    stdout: io::Stdout,
 }
 
-// TODO: use crossterm instead, idk what im doing?
+const ANSI_PURGE: &[u8; 4] = b"\x1b[3J";
+const ANSI_CURSOR_HOME: &[u8; 3] = b"\x1b[H";
 
-// TODO: we actually do no need a lock on stdout for this...
-// o.w. we do get timing issues
-pub fn print_at_line_stdout(line_num: usize, val: impl std::fmt::Display) {
-    print!("\x1b[{};1H", line_num); // go to line_num line
-    print!("\x1b[2K"); // clear line
-    print!("{}", val);
-    io::stdout().flush().unwrap(); // TODO: create a single instantation of io and pass a ref to it to all places that could call this? or do that and write an impl on SolutionInput to use this function in an OOP way?
-}
+impl Terminal {
+    pub fn new(buffer_size: usize) -> Self {
+        let mut vec = Vec::new();
+        for _ in 0..buffer_size {
+            vec.push(None);
+        }
 
-pub fn move_cursor_to(line_num: usize) {
-    print!("\x1b[{};1H", line_num); // go to line_num line
-}
-
-pub fn create_n_newlines(num_lines: usize) {
-    for _ in 0..num_lines {
-        println!();
+        Self {
+            buffer: Arc::new(Mutex::new(vec)),
+            stdout: io::stdout(),
+        }
     }
-    print!("\x1b[H");
-    io::stdout().flush().unwrap();
+
+    pub fn update_line(&self, line_number: usize, value: String) {
+        let mut buffer = self.buffer.lock().unwrap();
+        if line_number < buffer.len() {
+            buffer[line_number] = Some(value);
+        }
+    }
+
+    pub fn render(&self) {
+        let mut stdout = self.stdout.lock();
+
+        stdout.write(ANSI_PURGE).unwrap();
+        stdout.write(ANSI_CURSOR_HOME).unwrap();
+
+        let buffer = self.buffer.lock().unwrap();
+        for line in buffer.iter() {
+            match line {
+                Some(str) => stdout.write(format!("{}\n", str).as_bytes()).unwrap(),
+                None => stdout.write(String::from("\n").as_bytes()).unwrap(),
+            };
+        }
+        stdout.flush().unwrap();
+    }
+
+    pub fn clean_term(&self) {
+        let mut stdout = self.stdout.lock();
+        stdout.write(ANSI_PURGE).unwrap();
+        stdout.write(ANSI_CURSOR_HOME).unwrap();
+        stdout.flush().unwrap();
+    }
 }

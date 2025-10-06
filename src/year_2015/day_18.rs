@@ -1,4 +1,4 @@
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 // assume input in grid_1, output next state into grid_2
 fn animate(grid_1: &mut Vec<Vec<u8>>, grid_2: &mut Vec<Vec<u8>>) {
@@ -191,6 +191,7 @@ fn part_2(mut grid_1: Vec<Vec<u8>>, mut grid_2: Vec<Vec<u8>>) -> i32 {
 }
 
 pub fn day_18(input: SolutionInput) {
+    let term = input.term;
     let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut grid_1: Vec<Vec<u8>> = vec![vec![0; 100]; 100];
@@ -218,11 +219,8 @@ pub fn day_18(input: SolutionInput) {
     }
 
     let part_1_result = format!("2015.18 Part 1: {}", part_1(grid_1.clone(), grid_2.clone()));
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-    }
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.render();
 
     // part 2: turn on the four corners at start
     grid_1[0][0] = 1;
@@ -230,9 +228,6 @@ pub fn day_18(input: SolutionInput) {
     grid_1[99][0] = 1;
     grid_1[99][99] = 1;
     let part_2_result = format!("2015.18 Part 2: {}", part_2(grid_1, grid_2));
-    if input.run_in_standalone {
-        println!("{}", part_2_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

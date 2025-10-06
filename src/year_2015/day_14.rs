@@ -1,4 +1,4 @@
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 struct Reindeer {
     speed: u32,
@@ -85,11 +85,8 @@ pub fn day_14(input: SolutionInput) {
 
     let part_1_result = format!("2015.14 Part 1: {}", max_distance);
     let part_2_result = format!("2015.14 Part 2: {}", max_points);
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-        println!("{}", part_2_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    let term = input.term;
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

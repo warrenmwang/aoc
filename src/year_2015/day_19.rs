@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 fn part_1(molecule: String, mappings: Vec<(&str, &str)>) -> usize {
     // "How many distinct molecules can be created after all the
@@ -46,6 +46,7 @@ fn part_2(mut molecule: String, mut mappings: Vec<(&str, &str)>) -> usize {
 
 pub fn day_19(input: SolutionInput) {
     // https://adventofcode.com/2015/day/19
+    let term = input.term;
     let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut mappings: Vec<(&str, &str)> = Vec::new();
@@ -69,13 +70,11 @@ pub fn day_19(input: SolutionInput) {
         "2015.19 Part 1: {}",
         part_1(molecule.clone(), mappings.clone())
     );
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-        println!("2015.19 Part 2: WIP");
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, "2015.19 Part 2: WIP");
-    }
 
     // part_2(molecule, mappings);
+    let part_2_result = String::from("2015.19 Part 2: WIP");
+
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

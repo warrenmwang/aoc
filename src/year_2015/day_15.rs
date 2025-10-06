@@ -1,4 +1,4 @@
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 struct Ingredient {
     capacity: i32,
@@ -62,6 +62,7 @@ fn calc_score(
 }
 
 pub fn day_15(input: SolutionInput) {
+    let term = input.term;
     let lines: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut ingredients: Vec<Ingredient> = Vec::new();
@@ -97,11 +98,8 @@ pub fn day_15(input: SolutionInput) {
         }
     }
     let part_1_result = format!("2015.15 Part 1: {}", max_score);
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-    }
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.render();
 
     let mut max_score = 0;
     for t1 in 0..100 {
@@ -116,9 +114,6 @@ pub fn day_15(input: SolutionInput) {
         }
     }
     let part_2_result = format!("2015.15 Part 2: {}", max_score);
-    if input.run_in_standalone {
-        println!("{}", part_2_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

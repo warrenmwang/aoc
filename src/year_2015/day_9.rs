@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use std::collections::HashMap;
 
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 fn is_valid_path(
     path: Vec<&&&str>,
@@ -96,13 +96,10 @@ pub fn day_9(input: SolutionInput) {
         }
     }
 
-    if input.run_in_standalone {
-        println!("2015.9 Part 1: {}", smallest_path);
-        println!("2015.9 Part 2: {}", longest_path);
-    } else {
-        let part_1_result = format!("2015.9 Part 1: {}", smallest_path);
-        let part_2_result = format!("2015.9 Part 2: {}", longest_path);
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    let part_1_result = format!("2015.9 Part 1: {}", smallest_path);
+    let part_2_result = format!("2015.9 Part 2: {}", longest_path);
+    let term = input.term;
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

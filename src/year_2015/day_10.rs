@@ -1,4 +1,4 @@
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 fn look_and_say(s: String) -> String {
     let mut count = 0;
@@ -42,11 +42,8 @@ pub fn day_10(input: SolutionInput) {
 
     let part_1_result = format!("2015.10 Part 1: {}", part_1_res.len());
     let part_2_result = format!("2015.10 Part 2: {}", res.len());
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-        println!("{}", part_2_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    let term = input.term;
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 struct Sue {
     id: u16,
@@ -61,6 +61,7 @@ fn part_2(sues: &Vec<Sue>, mfcsam_result: &HashMap<String, u8>) -> u16 {
 }
 
 pub fn day_16(input: SolutionInput) {
+    let term = input.term;
     let text_input: Vec<&str> = input.text_input.trim().split("\n").collect();
 
     let mut sues: Vec<Sue> = Vec::new();
@@ -99,13 +100,10 @@ pub fn day_16(input: SolutionInput) {
     .into_iter()
     .collect();
 
-    if input.run_in_standalone {
-        println!("2015.16 Part 1: {}", part_1(&sues, &mfcsam_result));
-        println!("2015.16 Part 2: {}", part_2(&sues, &mfcsam_result));
-    } else {
-        let part_1_result = format!("2015.16 Part 1: {}", part_1(&sues, &mfcsam_result));
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-        let part_2_result = format!("2015.16 Part 2: {}", part_2(&sues, &mfcsam_result));
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    let part_1_result = format!("2015.16 Part 1: {}", part_1(&sues, &mfcsam_result));
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.render();
+    let part_2_result = format!("2015.16 Part 2: {}", part_2(&sues, &mfcsam_result));
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }

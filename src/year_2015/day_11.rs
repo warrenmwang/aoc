@@ -1,4 +1,4 @@
-use crate::{SolutionInput, terminal};
+use crate::SolutionInput;
 
 fn increment_string(input: String) -> String {
     fn increment_char(c: char) -> (char, bool) {
@@ -83,23 +83,18 @@ fn get_next_password(curr_password: String) -> String {
 }
 
 pub fn day_11(input: SolutionInput) {
+    let term = input.term;
     let mut text_input = input.text_input.trim().to_string();
     text_input = get_next_password(text_input);
 
     let part_1_result = format!("2015.11 Part 1: {}", text_input);
-    if input.run_in_standalone {
-        println!("{}", part_1_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line, part_1_result);
-    }
+    term.update_line(input.stdout_start_line, part_1_result);
+    term.render();
 
     text_input = get_next_password(text_input);
     let part_2_result = format!("2015.11 Part 2: {}", text_input);
-    if input.run_in_standalone {
-        println!("{}", part_2_result);
-    } else {
-        terminal::print_at_line_stdout(input.stdout_start_line + 1, part_2_result);
-    }
+    term.update_line(input.stdout_start_line + 1, part_2_result);
+    term.render();
 }
 
 #[cfg(test)]
